@@ -14,15 +14,10 @@ CACHE_FILE="$CACHE_DIR/imagemagick.tar.gz"
 
 if [ ! -f $CACHE_FILE ]; then
   # install imagemagick
-  env_dir=$3
-  whitelist_regex=${2:-'^(IMAGE_MAGICK_VERSION)$'}
-  blacklist_regex=${3:-'^(PATH|GIT_DIR|CPATH|CPPATH|LD_PRELOAD|LIBRARY_PATH)$'}
-  if [ -d "$env_dir" ]; then
-    for e in $(ls $env_dir); do
-      echo "$e" | grep -E "$whitelist_regex" | grep -qvE "$blacklist_regex" &&
-      export "$e=$(cat $env_dir/$e)"
-      :
-    done
+  ENV_DIR=$3
+  export "IMAGE_MAGICK_VERSION=$(cat $ENV_DIR/IMAGE_MAGICK_VERSION)"
+  if [ -n "$IMAGE_MAGICK_VERSION" ]; then
+    echo "-----> ImageMagick version: $IMAGE_MAGICK_VERSION"
   fi
   IMAGE_MAGICK_VERSION="${IMAGE_MAGICK_VERSION:-6.9.3-3}"
   IMAGE_MAGICK_FILE="ImageMagick-$IMAGE_MAGICK_VERSION.tar.gz"
